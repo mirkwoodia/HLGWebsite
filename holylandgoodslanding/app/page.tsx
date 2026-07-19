@@ -17,7 +17,7 @@ declare global {
 /*  link so Amazon-side conversions can be tied back to this page and  */
 /*  the Meta campaign that drove the click.                            */
 /* ------------------------------------------------------------------ */
-const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4'; // TODO: swap for your Amazon Attribution link
+const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6702E1E3B66386647BB22850_afap_abs&ref_=aa_maas&tag=maas'; // TODO: swap for your Amazon Attribution link
 
 /* ------------------------------------------------------------------ */
 /*  PRICE                                                              */
