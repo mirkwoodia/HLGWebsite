@@ -25,7 +25,7 @@ const META_PIXEL_ID = '1207814908144470';
 /*  link so Amazon-side conversions can be tied back to this page and  */
 /*  the Meta campaign that drove the click.                            */
 /* ------------------------------------------------------------------ */
-const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6702E1E3B66386647BB22850_afap_abs&ref_=aa_maas&tag=maas'; // TODO: swap for your Amazon Attribution link
+const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6702E1E3B66386647BB22850_afap_abs&ref_=aa_maas&tag=maas'; // Amazon Attribution link
 
 /* ------------------------------------------------------------------ */
 /*  PRICE                                                              */
@@ -82,17 +82,12 @@ const USAGE_SHOTS = [
 
 export default function Page() {
   /* ------------------------------------------------------------------ */
-  /*  CUSTOM CONVERSION TRIGGER                                          */
+  /*  CONVERSION TRIGGER                                                 */
   /*  Fires when a visitor clicks any "Available at Amazon" CTA or the   */
-  /*  hero product photo.                                                */
+  /*  hero product photo. Single standard event only — trackCustom was   */
+  /*  dropped so Meta's event manager only sees one event per click.     */
   /* ------------------------------------------------------------------ */
   const handleAmazonClick = () => {
-    window.fbq?.('trackCustom', 'AmazonCTAClick', {
-      content_name: 'Holy Land Goods - Palestinian Extra Virgin Olive Oil',
-      content_ids: ['B0GSG2GJV4'],
-      value: parseFloat(PRICE.replace(/[^0-9.]/g, '')),
-      currency: 'USD',
-    });
     window.fbq?.('track', 'Lead');
   };
 
