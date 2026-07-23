@@ -112,16 +112,14 @@ export default function Page() {
           `,
         }}
       />
-      <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height={1}
-          width={1}
-          style={{ display: 'none' }}
-          src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
-          alt=""
-        />
-      </noscript>
+      {/* Raw HTML string, not a JSX <img> — keeps this invisible to
+          Next's element-tree scanning so it doesn't get auto-preloaded
+          (which was firing an extra PageView on every load). */}
+      <noscript
+        dangerouslySetInnerHTML={{
+          __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1" alt="" />`,
+        }}
+      />
 
       {/* ============================== HEADER ============================== */}
       <header className="sticky top-0 z-40 border-b border-olive-200/60 bg-sand-50/90 backdrop-blur">
