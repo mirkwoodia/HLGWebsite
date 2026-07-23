@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import Script from 'next/script';
 
 /* ------------------------------------------------------------------ */
 /*  fbq type declaration so TypeScript doesn't complain about window   */
@@ -10,6 +10,14 @@ declare global {
     fbq?: (...args: any[]) => void;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  META PIXEL ID                                                      */
+/*  From Events Manager > Data Sources > your Pixel > Setup. Update    */
+/*  here if you ever swap pixels — it's used for both the script below */
+/*  and the <noscript> fallback pixel.                                 */
+/* ------------------------------------------------------------------ */
+const META_PIXEL_ID = '1207814908144470';
 
 /* ------------------------------------------------------------------ */
 /*  AMAZON LINK                                                        */
@@ -74,48 +82,52 @@ const USAGE_SHOTS = [
 
 export default function Page() {
   /* ------------------------------------------------------------------ */
-  /*  META PIXEL — PASTE YOUR STANDARD SNIPPET HERE                      */
-  /*                                                                      */
-  /*  1. Go to Events Manager > Data Sources > your Pixel > Setup.        */
-  /*  2. Copy the base pixel code (the one with fbq('init', 'PIXEL_ID')). */
-  /*  3. Paste it inside the commented block below, replacing the sample. */
-  /*  4. Uncomment the block. It runs once on mount and fires PageView.   */
-  /* ------------------------------------------------------------------ */
-  useEffect(() => {
-    /*
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', 'YOUR_PIXEL_ID_HERE');
-    fbq('track', 'PageView');
-    */
-  }, []);
-
-  /* ------------------------------------------------------------------ */
   /*  CUSTOM CONVERSION TRIGGER                                          */
-  /*  Fires when a visitor clicks either "Available at Amazon" button.   */
-  /*  Uncomment the fbq calls once your pixel snippet above is live.     */
+  /*  Fires when a visitor clicks any "Available at Amazon" CTA or the   */
+  /*  hero product photo.                                                */
   /* ------------------------------------------------------------------ */
   const handleAmazonClick = () => {
-    // window.fbq?.('trackCustom', 'AmazonCTAClick', {
-    //   content_name: 'Holy Land Goods - Palestinian Extra Virgin Olive Oil',
-    //   content_ids: ['B0GSG2GJV4'],
-    //   value: 24.99,
-    //   currency: 'USD',
-    // });
-    //
-    // Optional: also fire a standard event so it shows up in the
-    // standard Meta Ads reporting columns.
-    // window.fbq?.('track', 'Lead');
+    window.fbq?.('trackCustom', 'AmazonCTAClick', {
+      content_name: 'Holy Land Goods - Palestinian Extra Virgin Olive Oil',
+      content_ids: ['B0GSG2GJV4'],
+      value: parseFloat(PRICE.replace(/[^0-9.]/g, '')),
+      currency: 'USD',
+    });
+    window.fbq?.('track', 'Lead');
   };
 
   return (
     <main className="min-h-screen bg-sand-50 text-olive-950">
+      {/* ============================== META PIXEL ============================== */}
+      <Script
+        id="meta-pixel"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '${META_PIXEL_ID}');
+            fbq('track', 'PageView');
+          `,
+        }}
+      />
+      <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          height={1}
+          width={1}
+          style={{ display: 'none' }}
+          src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+          alt=""
+        />
+      </noscript>
+
       {/* ============================== HEADER ============================== */}
       <header className="sticky top-0 z-40 border-b border-olive-200/60 bg-sand-50/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
