@@ -15,41 +15,73 @@ declare global {
 /*  META PIXEL ID                                                      */
 /*  From Events Manager > Data Sources > your Pixel > Setup. Update    */
 /*  here if you ever swap pixels — it's used for both the script below */
-/*  and the <noscript> fallback pixel.                                 */
+/*  and the <noscript> fallback pixel. Same pixel drives both the      */
+/*  Amazon and TikTok Shop buttons below.                              */
 /* ------------------------------------------------------------------ */
 const META_PIXEL_ID = '1207814908144470';
 
-/* ------------------------------------------------------------------ */
-/*  AMAZON LINK                                                        */
-/*  Replace this with your Amazon Attribution / Associates tagged      */
-/*  link so Amazon-side conversions can be tied back to this page and  */
-/*  the Meta campaign that drove the click.                            */
-/* ------------------------------------------------------------------ */
-const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6702E1E3B66386647BB22850_afap_abs&ref_=aa_maas&tag=maas'; // Amazon Attribution link
+/* ==================================================================== */
+/*  AMAZON                                                               */
+/* ==================================================================== */
 
-/* ------------------------------------------------------------------ */
-/*  PRICE                                                              */
-/*  There's no clean way to sync this live from a static export        */
-/*  without Amazon's Product Advertising API (needs Associate          */
-/*  approval + a signed backend call) — overkill for one SKU. Update   */
-/*  this by hand whenever your Amazon listing price changes.           */
-/* ------------------------------------------------------------------ */
-const PRICE = '$44.99';
+/*  Amazon Attribution / Associates tagged link so Amazon-side          */
+/*  conversions can be tied back to this page and the Meta campaign     */
+/*  that drove the click.                                               */
+const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6702E1E3B66386647BB22850_afap_abs&ref_=aa_maas&tag=maas';
 
-/* ------------------------------------------------------------------ */
-/*  COUPON / DEAL TAGS                                                 */
-/*  Flip either (or both) to true when your Amazon listing has an      */
-/*  active coupon or Amazon "deal" badge, and edit the label/price to  */
-/*  match. Each renders as a tag next to PRICE showing its own price   */
-/*  — coupon and deal aren't assumed to stack, so they're independent. */
-/* ------------------------------------------------------------------ */
-const SHOW_COUPON = true;
-const COUPON_TEXT = 'Clip Coupon';
-const COUPON_PRICE = '$37.75';
+/*  No clean way to sync this live from a static export without         */
+/*  Amazon's Product Advertising API — update by hand when it changes.  */
+const AMAZON_PRICE = '$44.99';
 
-const SHOW_DEAL = false;
-const DEAL_TEXT = 'Limited-Time Deal';
-const DEAL_PRICE = '$36.99';
+/*  Coupon and Sale Event tags are independent — both can be on at the  */
+/*  same time and will just show side by side, which is fine.           */
+const SHOW_AMAZON_COUPON = true;
+const AMAZON_COUPON_TEXT = 'Clip Coupon';
+const AMAZON_COUPON_PRICE = '$37.75';
+
+const SHOW_AMAZON_SALE = false;
+const AMAZON_SALE_TEXT = 'Sale Event';
+const AMAZON_SALE_PRICE = '$36.99';
+const AMAZON_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
+
+/*  SEPARATE 3rd option: one combined callout showing the sale price +  */
+/*  coupon discount = final price, e.g. "Sale Event $37.95 + Clip       */
+/*  Coupon 15% off = Final Price $32.26". Independent of the two        */
+/*  toggles above — turn it on/off regardless of what they're set to.   */
+/*  No math happens on the page; type in all three numbers/words.       */
+const SHOW_AMAZON_STACK = false;
+const AMAZON_STACK_SALE_LABEL = 'Sale Event';
+const AMAZON_STACK_SALE_PRICE = '$37.95';
+const AMAZON_STACK_COUPON_LABEL = 'Clip Coupon';
+const AMAZON_STACK_COUPON_PRICE = '15% off';
+const AMAZON_STACK_FINAL_LABEL = 'Final Price';
+const AMAZON_STACK_FINAL_PRICE = '$32.26';
+const AMAZON_STACK_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
+
+/* ==================================================================== */
+/*  TIKTOK SHOP                                                          */
+/*  Same fields as Amazon above, mirrored for your TikTok Shop listing.  */
+/* ==================================================================== */
+const TIKTOK_URL = 'https://shop.tiktok.com/us/pdp/1732496860708770134';
+const TIKTOK_PRICE = '$44.99';
+
+const SHOW_TIKTOK_COUPON = false;
+const TIKTOK_COUPON_TEXT = 'Clip Coupon';
+const TIKTOK_COUPON_PRICE = '$37.75';
+
+const SHOW_TIKTOK_SALE = false;
+const TIKTOK_SALE_TEXT = 'Sale Event';
+const TIKTOK_SALE_PRICE = '$36.99';
+const TIKTOK_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
+
+const SHOW_TIKTOK_STACK = true;
+const TIKTOK_STACK_SALE_LABEL = 'Sale Event';
+const TIKTOK_STACK_SALE_PRICE = '$37.95';
+const TIKTOK_STACK_COUPON_LABEL = 'Clip Coupon';
+const TIKTOK_STACK_COUPON_PRICE = '15% off';
+const TIKTOK_STACK_FINAL_LABEL = 'Final Price';
+const TIKTOK_STACK_FINAL_PRICE = '$32.26';
+const TIKTOK_STACK_DURATION = 'Aug 6 - Aug 9'; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
 /* ------------------------------------------------------------------ */
 /*  USAGE PHOTOS                                                       */
@@ -82,12 +114,16 @@ const USAGE_SHOTS = [
 
 export default function Page() {
   /* ------------------------------------------------------------------ */
-  /*  CONVERSION TRIGGER                                                 */
-  /*  Fires when a visitor clicks any "Available at Amazon" CTA or the   */
-  /*  hero product photo. Single standard event only — trackCustom was   */
-  /*  dropped so Meta's event manager only sees one event per click.     */
+  /*  CONVERSION TRIGGERS                                                */
+  /*  Fire when a visitor clicks an Amazon or TikTok Shop CTA (or the    */
+  /*  hero product photo). Single standard event only, on purpose —      */
+  /*  Meta's Event Manager only needs to see one event per click.        */
   /* ------------------------------------------------------------------ */
   const handleAmazonClick = () => {
+    window.fbq?.('track', 'Lead');
+  };
+
+  const handleTikTokClick = () => {
     window.fbq?.('track', 'Lead');
   };
 
@@ -130,15 +166,26 @@ export default function Page() {
               Holy Land Goods
             </span>
           </div>
-          <a
-            href={AMAZON_URL}
-            onClick={handleAmazonClick}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-            className="hidden rounded-full bg-sand-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sand-700 sm:inline-block"
-          >
-            Available at Amazon
-          </a>
+          <div className="hidden items-center gap-2 sm:flex">
+            <a
+              href={AMAZON_URL}
+              onClick={handleAmazonClick}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="rounded-full bg-sand-600 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-sand-700"
+            >
+              Available at Amazon
+            </a>
+            <a
+              href={TIKTOK_URL}
+              onClick={handleTikTokClick}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="rounded-full bg-black px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-olive-900"
+            >
+              Shop on TikTok
+            </a>
+          </div>
         </div>
       </header>
 
@@ -162,16 +209,38 @@ export default function Page() {
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-2">
               <span className="font-serif text-3xl font-bold text-white">
-                {PRICE}
+                {AMAZON_PRICE}
               </span>
               <span className="text-sm text-sand-300">on Amazon</span>
-              {SHOW_COUPON && (
-                <PriceBadge tone="coupon" label={COUPON_TEXT} price={COUPON_PRICE} />
+              {SHOW_AMAZON_COUPON && (
+                <PriceBadge
+                  tone="coupon"
+                  label={AMAZON_COUPON_TEXT}
+                  price={AMAZON_COUPON_PRICE}
+                />
               )}
-              {SHOW_DEAL && (
-                <PriceBadge tone="deal" label={DEAL_TEXT} price={DEAL_PRICE} />
+              {SHOW_AMAZON_SALE && (
+                <PriceBadge
+                  tone="sale"
+                  label={AMAZON_SALE_TEXT}
+                  price={AMAZON_SALE_PRICE}
+                  duration={AMAZON_SALE_DURATION}
+                />
               )}
             </div>
+            {SHOW_AMAZON_STACK && (
+              <div className="mt-3">
+                <StackPromo
+                  saleLabel={AMAZON_STACK_SALE_LABEL}
+                  salePrice={AMAZON_STACK_SALE_PRICE}
+                  couponLabel={AMAZON_STACK_COUPON_LABEL}
+                  couponPrice={AMAZON_STACK_COUPON_PRICE}
+                  finalLabel={AMAZON_STACK_FINAL_LABEL}
+                  finalPrice={AMAZON_STACK_FINAL_PRICE}
+                  saleDuration={AMAZON_STACK_DURATION}
+                />
+              </div>
+            )}
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <a
                 href={AMAZON_URL}
@@ -186,6 +255,56 @@ export default function Page() {
             </div>
             <p className="mt-3 text-xs text-sand-300">
               Ships from and sold by Amazon.com &middot; Prime eligible
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center gap-2">
+              <span className="font-serif text-3xl font-bold text-white">
+                {TIKTOK_PRICE}
+              </span>
+              <span className="text-sm text-sand-300">on TikTok</span>
+              {SHOW_TIKTOK_COUPON && (
+                <PriceBadge
+                  tone="coupon"
+                  label={TIKTOK_COUPON_TEXT}
+                  price={TIKTOK_COUPON_PRICE}
+                />
+              )}
+              {SHOW_TIKTOK_SALE && (
+                <PriceBadge
+                  tone="sale"
+                  label={TIKTOK_SALE_TEXT}
+                  price={TIKTOK_SALE_PRICE}
+                  duration={TIKTOK_SALE_DURATION}
+                />
+              )}
+            </div>
+            {SHOW_TIKTOK_STACK && (
+              <div className="mt-3">
+                <StackPromo
+                  saleLabel={TIKTOK_STACK_SALE_LABEL}
+                  salePrice={TIKTOK_STACK_SALE_PRICE}
+                  couponLabel={TIKTOK_STACK_COUPON_LABEL}
+                  couponPrice={TIKTOK_STACK_COUPON_PRICE}
+                  finalLabel={TIKTOK_STACK_FINAL_LABEL}
+                  finalPrice={TIKTOK_STACK_FINAL_PRICE}
+                  saleDuration={TIKTOK_STACK_DURATION}
+                />
+              </div>
+            )}
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={TIKTOK_URL}
+                onClick={handleTikTokClick}
+                target="_blank"
+                rel="noopener noreferrer sponsored"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-black px-8 py-4 text-base font-bold text-white shadow-lg shadow-black/20 transition hover:bg-olive-900 active:scale-[0.98]"
+              >
+                <TikTokIcon className="h-5 w-5" />
+                Shop on TikTok
+              </a>
+            </div>
+            <p className="mt-3 text-xs text-sand-300">
+              Fulfilled by TikTok &middot; Free 3-Day Delivery eligible
             </p>
           </div>
 
@@ -416,15 +535,37 @@ export default function Page() {
             Taste What 2,000 Years of Craft Actually Tastes Like
           </h2>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-olive-900">
-            <span className="font-serif text-xl font-bold">{PRICE}</span>
-            {SHOW_COUPON && (
-              <PriceBadge tone="coupon" label={COUPON_TEXT} price={COUPON_PRICE} />
+            <span className="font-serif text-xl font-bold">{AMAZON_PRICE}</span>
+            {SHOW_AMAZON_COUPON && (
+              <PriceBadge
+                tone="coupon"
+                label={AMAZON_COUPON_TEXT}
+                price={AMAZON_COUPON_PRICE}
+              />
             )}
-            {SHOW_DEAL && (
-              <PriceBadge tone="deal" label={DEAL_TEXT} price={DEAL_PRICE} />
+            {SHOW_AMAZON_SALE && (
+              <PriceBadge
+                tone="sale"
+                label={AMAZON_SALE_TEXT}
+                price={AMAZON_SALE_PRICE}
+                duration={AMAZON_SALE_DURATION}
+              />
             )}
             <span>&middot; In stock now on Amazon. Ships fast with Prime.</span>
           </div>
+          {SHOW_AMAZON_STACK && (
+            <div className="mt-3 flex justify-center">
+              <StackPromo
+                saleLabel={AMAZON_STACK_SALE_LABEL}
+                salePrice={AMAZON_STACK_SALE_PRICE}
+                couponLabel={AMAZON_STACK_COUPON_LABEL}
+                couponPrice={AMAZON_STACK_COUPON_PRICE}
+                finalLabel={AMAZON_STACK_FINAL_LABEL}
+                finalPrice={AMAZON_STACK_FINAL_PRICE}
+                saleDuration={AMAZON_STACK_DURATION}
+              />
+            </div>
+          )}
           <a
             href={AMAZON_URL}
             onClick={handleAmazonClick}
@@ -449,8 +590,9 @@ export default function Page() {
           </div>
           <p className="mx-auto mt-3 max-w-xl text-xs leading-relaxed text-olive-600">
             Amazon, the Amazon logo, and Prime are trademarks of Amazon.com,
-            Inc. or its affiliates. Holy Land Goods is an independent brand
-            sold on Amazon; this page is not operated by Amazon.
+            Inc. or its affiliates. TikTok Shop is a trademark of TikTok
+            Inc./ByteDance Ltd. Holy Land Goods is an independent brand sold
+            on both platforms; this page is not operated by Amazon or TikTok.
           </p>
           <p className="mt-3 text-xs text-olive-500">
             &copy; {new Date().getFullYear()} Holy Land Goods &middot;{' '}
@@ -480,15 +622,39 @@ function PriceBadge({
   tone,
   label,
   price,
+  duration,
 }: {
-  tone: 'coupon' | 'deal';
+  tone: 'coupon' | 'sale' | 'final';
   label: string;
   price: string;
+  duration?: string;
 }) {
   const toneClasses =
     tone === 'coupon'
       ? 'bg-emerald-600 text-white'
-      : 'bg-red-600 text-white';
+      : tone === 'sale'
+      ? 'bg-red-600 text-white'
+      : 'bg-amber-500 text-olive-950';
+
+  // With a duration, the tag grows into a two-line block (label/price on
+  // top, duration underneath) instead of staying a single-line pill.
+  if (duration) {
+    return (
+      <span
+        className={`inline-flex flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 text-xs font-bold leading-tight ${toneClasses}`}
+      >
+        <span className="flex items-center gap-1.5">
+          <span className="uppercase tracking-wide">{label}</span>
+          <span className="opacity-80">&middot;</span>
+          <span>{price}</span>
+        </span>
+        <span className="text-[10px] font-medium normal-case opacity-90">
+          {duration}
+        </span>
+      </span>
+    );
+  }
+
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${toneClasses}`}
@@ -497,6 +663,48 @@ function PriceBadge({
       <span className="opacity-80">&middot;</span>
       <span>{price}</span>
     </span>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Combined "sale + coupon = final price" callout. A separate, 3rd    */
+/*  promo option from the two PriceBadge toggles above — independent   */
+/*  of whether those are on or off. Reuses the same Sale Event and     */
+/*  Clip Coupon tags (plus a new "final" tone) connected by + and =,   */
+/*  so it reads as those two tags adding up to a third one. Every      */
+/*  value is plain text you set by hand; nothing here computes a       */
+/*  discount.                                                          */
+/* ------------------------------------------------------------------ */
+function StackPromo({
+  saleLabel,
+  salePrice,
+  saleDuration,
+  couponLabel,
+  couponPrice,
+  finalLabel,
+  finalPrice,
+}: {
+  saleLabel: string;
+  salePrice: string;
+  saleDuration?: string;
+  couponLabel: string;
+  couponPrice: string;
+  finalLabel: string;
+  finalPrice: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <PriceBadge
+        tone="sale"
+        label={saleLabel}
+        price={salePrice}
+        duration={saleDuration}
+      />
+      <span className="text-base font-bold opacity-60">+</span>
+      <PriceBadge tone="coupon" label={couponLabel} price={couponPrice} />
+      <span className="text-base font-bold opacity-60">=</span>
+      <PriceBadge tone="final" label={finalLabel} price={finalPrice} />
+    </div>
   );
 }
 
@@ -556,6 +764,19 @@ function AmazonSmileIcon({ className }: { className?: string }) {
       <path d="M17.5 15.5c1 .3 2 .8 2.5 1.5-1 .5-2.3.6-3.2.2" />
       <rect x="6" y="8" width="12" height="6" rx="1" />
       <path d="M9 8V6.5A1.5 1.5 0 0 1 10.5 5h3A1.5 1.5 0 0 1 15 6.5V8" />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M16.5 2h-3v13.5a2.75 2.75 0 1 1-2.75-2.75c.24 0 .47.02.7.07V9.7a5.85 5.85 0 0 0-.7-.04A5.84 5.84 0 1 0 16.5 15.5V8.9a7.6 7.6 0 0 0 4.4 1.4V7.3a4.6 4.6 0 0 1-4.4-4.4V2Z" />
     </svg>
   );
 }
