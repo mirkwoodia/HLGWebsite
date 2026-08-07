@@ -58,6 +58,9 @@ const AMAZON_STACK_FINAL_LABEL = 'Final Price';
 const AMAZON_STACK_FINAL_PRICE = '$32.26';
 const AMAZON_STACK_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
+// Cross out AMAZON_PRICE wherever it's shown whenever any promo is active.
+const AMAZON_HAS_PROMO = SHOW_AMAZON_COUPON || SHOW_AMAZON_SALE || SHOW_AMAZON_STACK;
+
 /* ==================================================================== */
 /*  TIKTOK SHOP                                                          */
 /*  Same fields as Amazon above, mirrored for your TikTok Shop listing.  */
@@ -82,6 +85,9 @@ const TIKTOK_STACK_COUPON_PRICE = '15% off';
 const TIKTOK_STACK_FINAL_LABEL = 'Final Price';
 const TIKTOK_STACK_FINAL_PRICE = '$32.26';
 const TIKTOK_STACK_DURATION = 'Aug 6 - Aug 9'; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
+
+// Cross out TIKTOK_PRICE wherever it's shown whenever any promo is active.
+const TIKTOK_HAS_PROMO = SHOW_TIKTOK_COUPON || SHOW_TIKTOK_SALE || SHOW_TIKTOK_STACK;
 
 /* ------------------------------------------------------------------ */
 /*  USAGE PHOTOS                                                       */
@@ -208,7 +214,9 @@ export default function Page() {
               of ordinary supermarket olive oil.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-2">
-              <span className="font-serif text-3xl font-bold text-white">
+              <span
+                className={`font-serif text-3xl font-bold ${AMAZON_HAS_PROMO ? 'text-white/70 line-through' : 'text-white'}`}
+              >
                 {AMAZON_PRICE}
               </span>
               <span className="text-sm text-sand-300">on Amazon</span>
@@ -258,7 +266,9 @@ export default function Page() {
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-2">
-              <span className="font-serif text-3xl font-bold text-white">
+              <span
+                className={`font-serif text-3xl font-bold ${TIKTOK_HAS_PROMO ? 'text-white/70 line-through' : 'text-white'}`}
+              >
                 {TIKTOK_PRICE}
               </span>
               <span className="text-sm text-sand-300">on TikTok</span>
@@ -535,7 +545,11 @@ export default function Page() {
             Taste What 2,000 Years of Craft Actually Tastes Like
           </h2>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-olive-900">
-            <span className="font-serif text-xl font-bold">{AMAZON_PRICE}</span>
+            <span
+              className={`font-serif text-xl font-bold ${AMAZON_HAS_PROMO ? 'opacity-70 line-through' : ''}`}
+            >
+              {AMAZON_PRICE}
+            </span>
             {SHOW_AMAZON_COUPON && (
               <PriceBadge
                 tone="coupon"
