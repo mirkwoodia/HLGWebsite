@@ -31,7 +31,7 @@ const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6
 
 /*  No clean way to sync this live from a static export without         */
 /*  Amazon's Product Advertising API — update by hand when it changes.  */
-const AMAZON_PRICE = '$44.99';
+const AMAZON_PRICE = '$44.95';
 
 /*  Coupon and Sale Event tags are independent — both can be on at the  */
 /*  same time and will just show side by side, which is fine.           */
@@ -66,7 +66,7 @@ const AMAZON_HAS_PROMO = SHOW_AMAZON_COUPON || SHOW_AMAZON_SALE || SHOW_AMAZON_S
 /*  Same fields as Amazon above, mirrored for your TikTok Shop listing.  */
 /* ==================================================================== */
 const TIKTOK_URL = 'https://shop.tiktok.com/us/pdp/1732496860708770134';
-const TIKTOK_PRICE = '$44.99';
+const TIKTOK_PRICE = '$44.95';
 
 const SHOW_TIKTOK_COUPON = false;
 const TIKTOK_COUPON_TEXT = 'Clip Coupon';
@@ -118,19 +118,43 @@ const USAGE_SHOTS = [
   },
 ];
 
+/* ------------------------------------------------------------------ */
+/*  Module-level (not React state) so they persist across re-renders   */
+/*  but reset on every fresh page load — i.e. once per visit. Amazon   */
+/*  has 5 separate CTAs on this page (header, hero text block, hero    */
+/*  photo, final CTA, mobile sticky bar) and TikTok has 2; without     */
+/*  this guard, a visitor clicking more than one of a platform's CTAs  */
+/*  in the same visit would fire that platform's Purchase event once   */
+/*  per click instead of once per visit.                               */
+/* ------------------------------------------------------------------ */
+let amazonPurchaseFired = false;
+let tiktokPurchaseFired = false;
+
 export default function Page() {
   /* ------------------------------------------------------------------ */
   /*  CONVERSION TRIGGERS                                                */
   /*  Fire when a visitor clicks an Amazon or TikTok Shop CTA (or the    */
-  /*  hero product photo). Single standard event only, on purpose —      */
-  /*  Meta's Event Manager only needs to see one event per click.        */
+  /*  hero product photo) — but only the first time per platform per     */
+  /*  visit, per the guard above. Using Purchase (not Lead) per campaign */
+  /*  setup; value/currency included since Purchase is meant to carry    */
+  /*  them for value-based optimization.                                 */
   /* ------------------------------------------------------------------ */
   const handleAmazonClick = () => {
-    window.fbq?.('track', 'Lead');
+    if (amazonPurchaseFired) return;
+    amazonPurchaseFired = true;
+    window.fbq?.('track', 'Purchase', {
+      value: parseFloat(AMAZON_PRICE.replace(/[^0-9.]/g, '')),
+      currency: 'USD',
+    });
   };
 
   const handleTikTokClick = () => {
-    window.fbq?.('track', 'Lead');
+    if (tiktokPurchaseFired) return;
+    tiktokPurchaseFired = true;
+    window.fbq?.('track', 'Purchase', {
+      value: parseFloat(TIKTOK_PRICE.replace(/[^0-9.]/g, '')),
+      currency: 'USD',
+    });
   };
 
   return (
@@ -314,7 +338,7 @@ export default function Page() {
               </a>
             </div>
             <p className="mt-3 text-xs text-sand-300">
-              Fulfilled by TikTok &middot; Free 3-Day Delivery eligible
+              Fulfilled by TikTok/Holy Land Goods &middot; Free 3-Day Delivery eligible
             </p>
           </div>
 
