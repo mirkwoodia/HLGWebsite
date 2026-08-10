@@ -68,16 +68,16 @@ const AMAZON_HAS_PROMO = SHOW_AMAZON_COUPON || SHOW_AMAZON_SALE || SHOW_AMAZON_S
 const TIKTOK_URL = 'https://shop.tiktok.com/us/pdp/1732496860708770134';
 const TIKTOK_PRICE = '$44.95';
 
-const SHOW_TIKTOK_COUPON = false;
+const SHOW_TIKTOK_COUPON = true;
 const TIKTOK_COUPON_TEXT = 'Clip Coupon';
-const TIKTOK_COUPON_PRICE = '$37.75';
+const TIKTOK_COUPON_PRICE = '$38.21';
 
 const SHOW_TIKTOK_SALE = false;
 const TIKTOK_SALE_TEXT = 'Sale Event';
 const TIKTOK_SALE_PRICE = '$36.99';
 const TIKTOK_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
-const SHOW_TIKTOK_STACK = true;
+const SHOW_TIKTOK_STACK = false;
 const TIKTOK_STACK_SALE_LABEL = 'Sale Event';
 const TIKTOK_STACK_SALE_PRICE = '$37.95';
 const TIKTOK_STACK_COUPON_LABEL = 'Clip Coupon';
