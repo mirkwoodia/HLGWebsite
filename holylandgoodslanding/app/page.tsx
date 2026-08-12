@@ -68,7 +68,7 @@ const AMAZON_HAS_PROMO = SHOW_AMAZON_COUPON || SHOW_AMAZON_SALE || SHOW_AMAZON_S
 const TIKTOK_URL = 'https://shop.tiktok.com/us/pdp/1732496860708770134';
 const TIKTOK_PRICE = '$44.95';
 
-const SHOW_TIKTOK_COUPON = true;
+const SHOW_TIKTOK_COUPON = false;
 const TIKTOK_COUPON_TEXT = 'Clip Coupon';
 const TIKTOK_COUPON_PRICE = '$38.21';
 
@@ -77,14 +77,14 @@ const TIKTOK_SALE_TEXT = 'Sale Event';
 const TIKTOK_SALE_PRICE = '$36.99';
 const TIKTOK_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
-const SHOW_TIKTOK_STACK = false;
+const SHOW_TIKTOK_STACK = true;
 const TIKTOK_STACK_SALE_LABEL = 'Sale Event';
-const TIKTOK_STACK_SALE_PRICE = '$37.95';
+const TIKTOK_STACK_SALE_PRICE = '$29.95';
 const TIKTOK_STACK_COUPON_LABEL = 'Clip Coupon';
 const TIKTOK_STACK_COUPON_PRICE = '15% off';
 const TIKTOK_STACK_FINAL_LABEL = 'Final Price';
-const TIKTOK_STACK_FINAL_PRICE = '$32.26';
-const TIKTOK_STACK_DURATION = 'Aug 6 - Aug 9'; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
+const TIKTOK_STACK_FINAL_PRICE = '$25.46';
+const TIKTOK_STACK_DURATION = 'Aug 11 - Aug 15'; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
 // Cross out TIKTOK_PRICE wherever it's shown whenever any promo is active.
 const TIKTOK_HAS_PROMO = SHOW_TIKTOK_COUPON || SHOW_TIKTOK_SALE || SHOW_TIKTOK_STACK;
