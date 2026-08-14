@@ -72,12 +72,12 @@ const SHOW_TIKTOK_COUPON = false;
 const TIKTOK_COUPON_TEXT = 'Clip Coupon';
 const TIKTOK_COUPON_PRICE = '$38.21';
 
-const SHOW_TIKTOK_SALE = false;
+const SHOW_TIKTOK_SALE = true;
 const TIKTOK_SALE_TEXT = 'Sale Event';
-const TIKTOK_SALE_PRICE = '$36.99';
-const TIKTOK_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
+const TIKTOK_SALE_PRICE = '$29.95';
+const TIKTOK_SALE_DURATION = 'Aug 11 - Aug 15'; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
-const SHOW_TIKTOK_STACK = true;
+const SHOW_TIKTOK_STACK = false;
 const TIKTOK_STACK_SALE_LABEL = 'Sale Event';
 const TIKTOK_STACK_SALE_PRICE = '$29.95';
 const TIKTOK_STACK_COUPON_LABEL = 'Clip Coupon';
