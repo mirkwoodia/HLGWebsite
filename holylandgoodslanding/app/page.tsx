@@ -41,7 +41,7 @@ const AMAZON_COUPON_PRICE = '$37.75';
 
 const SHOW_AMAZON_SALE = true;
 const AMAZON_SALE_TEXT = 'Sale Event';
-const AMAZON_SALE_PRICE = '$37.95';
+const AMAZON_SALE_PRICE = '$34.95';
 const AMAZON_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
 
 /*  SEPARATE 3rd option: one combined callout showing the sale price +  */
