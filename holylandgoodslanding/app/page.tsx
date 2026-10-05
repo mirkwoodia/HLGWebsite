@@ -31,7 +31,7 @@ const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6
 
 /*  No clean way to sync this live from a static export without         */
 /*  Amazon's Product Advertising API — update by hand when it changes.  */
-const AMAZON_PRICE = '$39.95';
+const AMAZON_PRICE = '$37.75';
 
 /*  Coupon and Sale Event tags are independent — both can be on at the  */
 /*  same time and will just show side by side, which is fine.           */
@@ -39,7 +39,7 @@ const SHOW_AMAZON_COUPON = false;
 const AMAZON_COUPON_TEXT = 'Clip Coupon';
 const AMAZON_COUPON_PRICE = '$37.75';
 
-const SHOW_AMAZON_SALE = true;
+const SHOW_AMAZON_SALE = false;
 const AMAZON_SALE_TEXT = 'Sale Event';
 const AMAZON_SALE_PRICE = '$34.95';
 const AMAZON_SALE_DURATION = ''; // optional, e.g. 'Aug 30 – Sept 5' — leave blank to hide
@@ -66,7 +66,7 @@ const AMAZON_HAS_PROMO = SHOW_AMAZON_COUPON || SHOW_AMAZON_SALE || SHOW_AMAZON_S
 /*  Same fields as Amazon above, mirrored for your TikTok Shop listing.  */
 /* ==================================================================== */
 const TIKTOK_URL = 'https://shop.tiktok.com/us/pdp/1732496860708770134';
-const TIKTOK_PRICE = '$39.95';
+const TIKTOK_PRICE = '$34.95';
 
 const SHOW_TIKTOK_COUPON = false;
 const TIKTOK_COUPON_TEXT = 'Clip Coupon';
