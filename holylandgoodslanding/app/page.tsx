@@ -31,7 +31,7 @@ const AMAZON_URL = 'https://www.amazon.com/dp/B0GSG2GJV4?maas=maas_adg_86E2A57C6
 
 /*  No clean way to sync this live from a static export without         */
 /*  Amazon's Product Advertising API — update by hand when it changes.  */
-const AMAZON_PRICE = '$37.75';
+const AMAZON_PRICE = '$35.01';
 
 /*  Coupon and Sale Event tags are independent — both can be on at the  */
 /*  same time and will just show side by side, which is fine.           */
